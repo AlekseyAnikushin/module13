@@ -3,6 +3,7 @@ package module13
 import (
 	"encoding/json"
 	"os"
+	"sort"
 )
 
 type Patient struct {
@@ -57,6 +58,10 @@ func Do(inFile string, outFile string) error {
 	if err != nil {
 		return err
 	}
+
+	sort.SliceStable(p, func(i, j int) bool {
+		return p[i].Age < p[j].Age
+	})
 
 	if p != nil {
 		err = write(outFile, &p)
