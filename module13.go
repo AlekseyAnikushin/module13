@@ -2,7 +2,6 @@ package module13
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
@@ -51,8 +50,6 @@ func write(outputFile string, data *[]Patient) error {
 }
 
 func Do(inFile string, outFile string) error {
-	fmt.Println("Version 1.0.0")
-
 	var p []Patient
 
 	err := read(inFile, &p)
