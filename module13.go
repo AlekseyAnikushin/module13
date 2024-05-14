@@ -2,22 +2,17 @@ package module13
 
 import (
 	"encoding/json"
-	"encoding/xml"
 	"os"
-	//"sort"
+	"sort"
 )
 
-type patient struct {
-	Name  string
-	Age   int
-	Email string
+type Patient struct {
+	Name  string `json:"name"`
+	Age   int    `json:"age"`
+	Email string `json:"email"`
 }
 
-type patients struct {
-	List []patient `xml:"Patient"`
-}
-
-func read(inputFile string, res *[]patient) error {
+func read(inputFile string, res *[]Patient) error {
 	f, err := os.Open(inputFile)
 
 	if err != nil {
@@ -26,9 +21,9 @@ func read(inputFile string, res *[]patient) error {
 
 	defer f.Close()
 
-	var p patient
+	var p Patient
 	dec := json.NewDecoder(f)
-	*res = make([]patient, 0, 3)
+	*res = make([]Patient, 0, 3)
 	for dec.More() {
 		err = dec.Decode(&p)
 		if err != nil {
@@ -40,7 +35,7 @@ func read(inputFile string, res *[]patient) error {
 	return nil
 }
 
-func write(outputFile string, data *patients) error {
+func write(outputFile string, data *[]Patient) error {
 	f, err := os.Create(outputFile)
 
 	if err != nil {
@@ -49,17 +44,14 @@ func write(outputFile string, data *patients) error {
 
 	defer f.Close()
 
-	f.WriteString(xml.Header)
-
-	enc := xml.NewEncoder(f)
-	enc.Indent("", "  ")
+	enc := json.NewEncoder(f)
 	err = enc.Encode(data)
 
 	return err
 }
 
 func Do(inFile string, outFile string) error {
-	var p []patient
+	var p []Patient
 
 	err := read(inFile, &p)
 
@@ -67,13 +59,12 @@ func Do(inFile string, outFile string) error {
 		return err
 	}
 
-	//sort.SliceStable(p, func(i, j int) bool {
-	//	return p[i].Age < p[j].Age
-	//})
+	sort.SliceStable(p, func(i, j int) bool {
+		return p[i].Age < p[j].Age
+	})
 
 	if p != nil {
-		ps := patients{p}
-		err = write(outFile, &ps)
+		err = write(outFile, &p)
 		if err != nil {
 			return err
 		}
