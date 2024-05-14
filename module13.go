@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"os"
-	//"sort"
+	"sort"
 )
 
 type patient struct {
@@ -67,9 +67,9 @@ func Do(inFile string, outFile string) error {
 		return err
 	}
 
-	//sort.SliceStable(p, func(i, j int) bool {
-	//	return p[i].Age < p[j].Age
-	//})
+	sort.SliceStable(p, func(i, j int) bool {
+		return p[i].Age < p[j].Age
+	})
 
 	if p != nil {
 		ps := patients{p}
